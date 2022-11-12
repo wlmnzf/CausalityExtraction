@@ -271,7 +271,36 @@ def test():
     content0_en = """He is so arrogant, because we are too weak. shit!"""
 
     content1 = """
-    截至2008年9月18日12时，5·12汶川地震共造成69227人死亡，374643人受伤，17923人失踪，是中华人民共和国成立以来破坏力最大的地震，也是唐山大地震后伤亡最严重的一次地震。
+He died for a noble cause.
+The drugs tend to cause drowsiness.
+The cause of the fire is not yet known.
+The immediate cause of death is unknown.
+Unemployment is a major cause of poverty.
+Tree roots can cause damage to buildings.
+High temperatures can cause hallucination.
+Idealistic young people died for the cause.
+The photo may cause offence to some people.
+Unemployment was the chief cause of poverty.
+She was the unwitting cause of the argument.
+This would cause inflation to let rip again.
+Caffeine can cause palpitations and headaches.
+The virus can cause pregnant animals to abort.
+She was soon converted to the socialist cause.
+Cars cause pollution, both smog and acid rain.
+It had been the cause of much emotional upset.
+Eating too much salt can cause fluid retention.
+Faulty wiring is the major cause of house fires.
+Vitamin deficiency in the diet can cause illness.
+The disease can cause sterility in men and women.
+These gases cause untold damage to the environment.
+The drug may cause an aggravation of the condition.
+Heavy seas can cause cancellation of ferry services.
+Brushing wet hair can cause stretching and breakage.
+Her inability to concentrate could cause an accident.
+Reports of this kind are guaranteed to cause anxiety.
+He was the unknowing cause of all the misunderstanding.
+They worked together to advance the cause of democracy.
+Heavy drinking can cause permanent damage to the brain.
     """
     content2 = '''
     2015年1月4日下午3时39分左右，贵州省遵义市习水县二郎乡遵赤高速二郎乡往仁怀市方向路段发生山体滑坡，发生规模约10万立方米,导致多辆车被埋，造成交通双向中断。此事故引起贵州省委、省政府的高度重视，省长陈敏尔作出指示，要求迅速组织开展救援工作，千方百计实施救援，减少人员伤亡和财物损失。遵义市立即启动应急救援预案，市应急办、公安、交通、卫生等救援力量赶赴现场救援。目前，灾害已造成3人遇难1人受伤，一辆轿车被埋。
