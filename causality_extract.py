@@ -130,7 +130,7 @@ class CausalityExractor():
         verb1: cause,            牵动、导向、使动、导致、勾起、引入、指引、使、予以、产生、促成、造成、引导、造就、促使、酿成、
         verb1_model:{Cause}(,)<Verb|Adverb...>{Effect}
         '''
-        pattern = re.compile(r'(.*)\s+(cause|causing|caused|trigger|triggering|triggered|affect|affecting|affected|induce|inducing|induced|reveal|revealed|revealing|lead to|leading to|leaded to|bring about|bringing about|brought about|bring on|bringing on|brought on|give rise to|given rise to|giving rise to|increase|result in|induce|so that.*\sto)/[d|v]+\s(.*)')
+        pattern = re.compile(r'(.*)\s+(cause(s)?|causing|caused|trigger(s)?|triggering|triggered|affect(s)?|affecting|affected|induce(s)?|inducing|induced|reveal(s)?|revealed|revealing|lead(s)? to|leading to|leaded to|bring(s)? about|bringing about|brought about|bring(s)? on|bringing on|brought on|give(s) rise to|given rise to|giving rise to|increase(s)?|increasing|increased|result(s)? in|resulting in|resulted in|induce(s)?|indeced|inducing|so that.*\sto)/[VBG|VBP|VBD|VBN]+\s(.*)')
         result = pattern.findall(sentence)
         data = dict()
         if result:
@@ -144,7 +144,7 @@ class CausalityExractor():
         prep:为了、依据、为、按照、因[为]、按、依赖、照、比、凭借、由于
         prep_model:<Prep...>{Cause},{Effect}
         '''
-        pattern = re.compile(r'\s?(in.*\sorder.*\sto|for.*\sthe.*\spurpose.*\sof|after)/[p|c]+\s(.*)[,，]+(.*)')
+        pattern = re.compile(r'\s?(in.*\sorder.*\sto|for.*\sthe.*\spurpose.*\sof|after)/[IN|TO]+\s(.*)[,，]+(.*)',re.IGNORECASE)
         result = pattern.findall(sentence)
         data = dict()
         if result:
@@ -206,22 +206,31 @@ class CausalityExractor():
         infos = list()
       #  print(sentence)
         if self.ruler0(sentence):
+            print(0)
             infos.append(self.ruler0(sentence))
         elif self.ruler1(sentence):
+            print(1)
             infos.append(self.ruler1(sentence))
         elif self.ruler2(sentence):
+            print(2)
             infos.append(self.ruler2(sentence))
         elif self.ruler3(sentence):
+            print(3)
             infos.append(self.ruler3(sentence))
         elif self.ruler4(sentence):
+            print(4)
             infos.append(self.ruler4(sentence))
         elif self.ruler5(sentence):
+            print(5)
             infos.append(self.ruler5(sentence))
         elif self.ruler6(sentence):
+            print(6)
             infos.append(self.ruler6(sentence))
         elif self.ruler7(sentence):
+            print(7)
             infos.append(self.ruler7(sentence))
         elif self.ruler8(sentence):
+            print(8)
             infos.append(self.ruler8(sentence))
         # elif self.ruler9(sentence):
         #     infos.append(self.ruler9(sentence))
@@ -314,9 +323,49 @@ def test():
     '''
 
     content_rule_5_base='''
+    for the purpose of maximize profit, the firm would seek to maximize output.
     In order to maximize profit, the firm would seek to maximize output.
-    for purpose of maximize profit, the firm would seek to maximize output.
     after installing maximize profit, the firm would seek to maximize output.
+    '''
+
+    content_rule_4_base='''
+    Dirt clogs the pores, causing blemishes.
+    the dog cause the bug problem.
+    the dog caused the bug problem.
+    This could trigger a memory about what you're talking about through that lecture, which can then trigger another memory.
+    This triggered a memory about what you're talking about through that lecture, which can then trigger another memory.
+    This is triggering a memory about what you're talking about through that lecture, which can then trigger another memory.
+    Does television affect children's behaviour?
+    Does television affected children's behaviour?
+    Does television be affecting children's behaviour?
+    Whales being sociable animals probably need the stimulus of sizeable gatherings to induce reproductives behavior.
+    The afternoon drifted by heavily, inducing sleep.
+    The afternoon drifted by heavily induced sleep.
+    The Committee released the minutes of its last meeting, revealing the group that sets interest rates thought unemployment could rise to 10% this year.
+    The report revealed a great deal of bureaucratic inefficiency.
+    The report reveals a great deal of bureaucratic inefficiency.
+    Curiosity can also be dangerous, leading to setbacks or even downfalls.
+    The curiosity leads to setbacks or even downfalls.
+    The curiosity leaded to setbacks or even downfalls.
+    Putting pressure on the country bring about political change.
+    Putting pressure on the country brought about political change.
+    Putting pressure on the country bringing about political change.
+    Putting pressure on the country bring on political change.
+    Putting pressure on the country brought on political change.
+    Putting pressure on the country bringing on political change.
+    Uniforms also give rise to some practical problems.
+    Uniforms also given rise to some practical problems.
+    Uniforms are also giving rise to some practical problems.
+    Reading will increase your vocabulary.
+    Reading increased your vocabulary.
+    Reading is increasing your vocabulary.
+    Such a war could result in the use of chemical and biological weapons
+    Such a war resulted in the use of chemical and biological weapons
+    Such a war is resulting in the use of chemical and biological weapons
+    Music can induce a meditative state.
+    Music is inducing a meditative state.
+    Music induced a meditative state.
+    For one thing, the futuredoes not exist, so that to forge images of it is a kind of lie.
     '''
 
     content_cause = """
@@ -1566,7 +1615,7 @@ def test():
     '''
 
     extractor = CausalityExractor()
-    datas = extractor.extract_main(content_rule_7_base )
+    datas = extractor.extract_main(content_rule_4_base)
     for data in datas:
         print('******'*4)
         print('cause', ''.join([word.split('/')[0] for word in data['cause'].split(' ') if word.split('/')[0]]))
