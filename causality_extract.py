@@ -97,7 +97,7 @@ class CausalityExractor():
                     ['if', 'then']]
 
         for word in word_pairs:
-            pattern = re.compile(r'\s?(%s)/[p|c]+\s(.*)(%s)/[p|c]+\s(.*)' % (word[0], word[1]))
+            pattern = re.compile(r'(.*)\s+(%s)/[p|c]+\s.*(%s)/[p|c]+\s(.*)' % (word[0], word[1]))
             result = pattern.findall(sentence)
             data = dict()
             if result:
@@ -113,10 +113,10 @@ class CausalityExractor():
     def ruler3(self, sentence):
         '''
         cons2:于是、所以、故、致使、以致[于]、因此、以至[于]、从而、因而
-        cons2_model:{Cause},<Conj...>{Effect}
+        cons2_model:{Cause},.<Conj...>{Effect}
         '''
 
-        pattern = re.compile(r'(.*)[,，]+.*(hence|therefore|thus|thereby|accordingly|consequently|so|in this way|that\'s why|以至于?|从而|因而)/[p|c]+\s(.*)')
+        pattern = re.compile(r'(.*)[,，.。]*.*(hence|therefore,?|thus|thereby|accordingly,?|consequently,?|so|in this way|that\'s why|以至于?|从而|因而)/[RB|NN|NNP|IN]+\s(.*)',re.IGNORECASE)
         result = pattern.findall(sentence)
         data = dict()
         if result:
@@ -130,7 +130,7 @@ class CausalityExractor():
         verb1: cause,            牵动、导向、使动、导致、勾起、引入、指引、使、予以、产生、促成、造成、引导、造就、促使、酿成、
         verb1_model:{Cause}(,)<Verb|Adverb...>{Effect}
         '''
-        pattern = re.compile(r'(.*)\s+(cause(s)?|causing|caused|trigger(s)?|triggering|triggered|affect(s)?|affecting|affected|induce(s)?|inducing|induced|reveal(s)?|revealed|revealing|lead(s)? to|leading to|leaded to|bring(s)? about|bringing about|brought about|bring(s)? on|bringing on|brought on|give(s) rise to|given rise to|giving rise to|increase(s)?|increasing|increased|result(s)? in|resulting in|resulted in|induce(s)?|indeced|inducing|so that.*\sto)/[VBG|VBP|VBD|VBN]+\s(.*)')
+        pattern = re.compile(r'(.*)\s+(causes?|causing|caused|triggers?|triggering|triggered|affects?|affecting|affected|induces?|inducing|induced|reveals?|revealed|revealing|leads? to|leading to|leaded to|brings? about|bringing about|brought about|brings? on|bringing on|brought on|gives rise to|given rise to|giving rise to|increases?|increasing|increased|results? in|resulting in|resulted in|induces?|indeced|inducing|so.*\sthat.*\sto)/[VBG|VBP|VBD|VBN|VBZ|TO]+\s(.*)')
         result = pattern.findall(sentence)
         data = dict()
         if result:
@@ -329,8 +329,10 @@ def test():
     '''
 
     content_rule_4_base='''
-    Dirt clogs the pores, causing blemishes.
+    the dog causes the bug problem.
+    For one thing, the future does not exist, so that to forge images of it is a kind of lie.
     the dog cause the bug problem.
+    Dirt clogs the pores, causing blemishes.
     the dog caused the bug problem.
     This could trigger a memory about what you're talking about through that lecture, which can then trigger another memory.
     This triggered a memory about what you're talking about through that lecture, which can then trigger another memory.
@@ -365,8 +367,48 @@ def test():
     Music can induce a meditative state.
     Music is inducing a meditative state.
     Music induced a meditative state.
-    For one thing, the futuredoes not exist, so that to forge images of it is a kind of lie.
     '''
+
+    content_rule_3_base='''
+    The cost of materials rose sharply last year, Accordingly, we were forced to increase our prices.
+    The cost of materials rose sharply last year, Accordingly we were forced to increase our prices.
+    Here is so huge, consequently even this vast chorus was occasionally overwhelmed by the brass.
+    We suspect they are trying to hide something, so the need for an independent inquiry.
+    In this way, it learned to paint.
+    He reads the texts every morning. In this way, he is able to recite them.
+    Everybody makes mistakes, that's why they put erasers on pencils.
+    We suspect they are trying to hide something, hence the need for an independent inquiry.
+    He's only 17 and therefore not eligible to vote.
+    We suspect they are trying to hide something, thus the need for an independent inquiry.
+    Regular exercise strengthens the heart, thereby reducing the risk of heart attack.
+    They had children and were consequently tied to the school vacations.
+    '''
+
+                    ['is', 'affected by'], ['was', 'affected by'], ['are', 'affected by'],['were','affected by'],
+                    ['is', 'effect on'], ['was', 'effect on'], ['are', 'effect on'],['were','effect on'],
+                    ['if', 'then']]
+    content_rule_2_base='''
+    Her triumph was a cause for celebration.
+    Her triumph is a cause for celebration.
+    The doctor said there was no cause for alarm.
+    Toys were a cause for celebration.
+    Toys are a cause for celebration.
+    Mrs Suzman was delighted to annoy them in the cause of justice.
+    Mrs Suzman is delighted to annoy them in the cause of justice.
+    they are delighted to annoy them in the cause of justice.
+    They were delighted to annoy them in the cause of justice.
+    The ignitor is the trigger of the engine.
+    The ignitor was the trigger of the engine.
+    The ignitors are the trigger of the engine.
+    The ignitor were the trigger of the engine.
+    '''
+
+
+
+
+
+
+
 
     content_cause = """
     He died for a noble cause.
@@ -1615,7 +1657,7 @@ def test():
     '''
 
     extractor = CausalityExractor()
-    datas = extractor.extract_main(content_rule_4_base)
+    datas = extractor.extract_main(content_rule_3_base)
     for data in datas:
         print('******'*4)
         print('cause', ''.join([word.split('/')[0] for word in data['cause'].split(' ') if word.split('/')[0]]))
