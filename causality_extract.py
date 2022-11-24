@@ -47,7 +47,7 @@ class CausalityExractor():
         cons3:因为、由于
         cons3_model:{Effect}<Conj...>{Cause}
         '''
-        pattern = re.compile(r'(.*)(is|was|are|were)?\s(caused by|arise from|arise out of|trigered by|induced by)/[p|c]+\s(.*)')
+        pattern = re.compile(r'(.*)[is|was|are|were|been]?[/VBD|a]?\s(caused.*\sby|arise.*\sfrom|arise.*\sout.*\sof|triggered.*\sby|induced.*\sby|the.*\scause.*\sof|affected.*\sby|effect.*\son)/[IN|c]+\s(.*)')
         result = pattern.findall(sentence)
         data = dict()
         if result:
@@ -64,13 +64,13 @@ class CausalityExractor():
         conm2_model:<Conj>{Effect},<Conj>{Cause}
         '''
         datas = list()
-        word_pairs =[['cause of', 'is'], ['cause of', 'was'], ['cause of', 'are'], ['cause of', 'were'],
-                     ['effect of', 'is'],['reason of','is'],['reason of','was'],['reason of','were'],['reason of','are'],
-                     ['by reason that','is'],['by reason that','was'],['by reason that','were'],['by reason that','are'],
-                     ['by reason why','is'],['by reason why','was'],['by reason why','are'],['by reason why','were'],
-                     ['reason for','is'],['reason for','are'],['reason for','was'],['reason for','were']]
+        word_pairs =[['cause.*\sof', 'is'], ['cause.*\sof', 'was'], ['cause.*\sof', 'are'], ['cause.*\sof', 'were'], ['cause.*\sof', 'been'],
+                     ['reason.*\sof','is'],['reason.*\sof','was'],['reason.*\sof','were'],['reason.*\sof','are'],['reason.*\sof', 'been'],
+                     ['by.*\sreason.*\sthat','is'],['by.*\sreason.*\sthat','was'],['by.*\sreason.*\sthat','were'],['by.*\sreason.*\sthat','are'],['by.*\sreason.*\sthat', 'been'],
+                     ['reason.*\swhy','is'],['reason.*\swhy','was'],['reason.*\swhy','are'],['reason.*\swhy','were'], ['reason.*\swhy', 'been'],
+                     ['reason.*\sfor','is'],['reason.*\sfor','are'],['reason.*\sfor','was'],['reason.*\sfor','were'],['reason.*\sfor', 'were']]
         for word in word_pairs:
-            pattern = re.compile(r'\s?(%s)/[p|c]+\s(.*)(%s)/[p|c]+\s(.*)' % (word[0], word[1]))
+            pattern = re.compile(r'\s?(%s)/[IN|WRB]+\s(.*)(%s)/[VBZ|VBD|VBP]+\s(.*)' % (word[0], word[1]))
             result = pattern.findall(sentence)
             data = dict()
             if result:
@@ -82,6 +82,8 @@ class CausalityExractor():
             return datas[0]
         else:
             return {}
+
+
     '''2由因到果配套式'''
     def ruler2(self, sentence):
         '''
@@ -89,20 +91,17 @@ class CausalityExractor():
         conm1_model:<Conj>{Cause}, <Conj>{Effect}
         '''
         datas = list()
-        word_pairs =[['is', 'cause for'], ['was', 'cause for'], ['are', 'cause for'],["were","cause for"],
-                    ['is', 'in the cause of'], ['was', 'in the cause of'], ['are', 'in the cause of'],["were","in the cause of"],
-                    ['is', 'trigger of'], ['was', 'trigger of'], ['are', 'trigger of'],['were','trigger of'],
-                    ['is', 'affected by'], ['was', 'affected by'], ['are', 'affected by'],['were','affected by'],
-                    ['is', 'effect on'], ['was', 'effect on'], ['are', 'effect on'],['were','effect on'],
+        word_pairs =[['is', 'cause.*\sfor'], ['was', 'cause.*\sfor'], ['are', 'cause.*\sfor'],["were","cause.*\sfor"],["been","cause.*\sfor"],
+                    ['is', 'trigger.*\sof'], ['was', 'trigger.*\sof'], ['are', 'trigger.*\sof'],['were','trigger.*\sof'],['been','trigger.*\sof'],
                     ['if', 'then']]
 
         for word in word_pairs:
-            pattern = re.compile(r'(.*)\s+(%s)/[p|c]+\s.*(%s)/[p|c]+\s(.*)' % (word[0], word[1]))
+            pattern = re.compile(r'(.*)\s+(%s)/[VBD|VBZ|VBP|VBN|IN]+\s.*(%s)/[IN|RB]+\s(.*)' % (word[0], word[1]))
             result = pattern.findall(sentence)
             data = dict()
             if result:
-                data['tag'] = result[0][0] + '-' + result[0][2]
-                data['cause'] = result[0][1]
+                data['tag'] = result[0][1] + '-' + result[0][2]
+                data['cause'] = result[0][0]
                 data['effect'] = result[0][3]
                 datas.append(data)
         if datas:
@@ -130,7 +129,7 @@ class CausalityExractor():
         verb1: cause,            牵动、导向、使动、导致、勾起、引入、指引、使、予以、产生、促成、造成、引导、造就、促使、酿成、
         verb1_model:{Cause}(,)<Verb|Adverb...>{Effect}
         '''
-        pattern = re.compile(r'(.*)\s+(causes?|causing|caused|triggers?|triggering|triggered|affects?|affecting|affected|induces?|inducing|induced|reveals?|revealed|revealing|leads? to|leading to|leaded to|brings? about|bringing about|brought about|brings? on|bringing on|brought on|gives rise to|given rise to|giving rise to|increases?|increasing|increased|results? in|resulting in|resulted in|induces?|indeced|inducing|so.*\sthat.*\sto)/[VBG|VBP|VBD|VBN|VBZ|TO]+\s(.*)')
+        pattern = re.compile(r'(.*)\s+(causes?|causing|caused|triggers?|triggering|triggered|affects?|affecting|affected|induces?|inducing|induced|reveals?|revealed|revealing|leads? to|leading to|leaded to|brings? about|bringing about|brought about|brings? on|bringing on|brought on|gives? rise to|given rise to|giving rise to|increases?|increasing|increased|results? in|resulting in|resulted in|induces?|indeced|inducing|so.*\sthat.*\sto|have.*\seffect.*\son|has.*\seffect.*\son|had.*\seffect.*\son|having.*\seffect.*\son)/[VBG|VBP|VBD|VBN|VBZ|TO]+\s(.*)')
         result = pattern.findall(sentence)
         data = dict()
         if result:
@@ -231,7 +230,7 @@ class CausalityExractor():
             infos.append(self.ruler7(sentence))
         elif self.ruler8(sentence):
             print(8)
-            infos.append(self.ruler8(sentence))
+            infos.append(self.ruler4(sentence))
         # elif self.ruler9(sentence):
         #     infos.append(self.ruler9(sentence))
 
@@ -384,27 +383,49 @@ def test():
     They had children and were consequently tied to the school vacations.
     '''
 
-                    ['is', 'affected by'], ['was', 'affected by'], ['are', 'affected by'],['were','affected by'],
-                    ['is', 'effect on'], ['was', 'effect on'], ['are', 'effect on'],['were','effect on'],
-                    ['if', 'then']]
+                    # ['if', 'then']]
     content_rule_2_base='''
     Her triumph was a cause for celebration.
     Her triumph is a cause for celebration.
     The doctor said there was no cause for alarm.
     Toys were a cause for celebration.
     Toys are a cause for celebration.
-    Mrs Suzman was delighted to annoy them in the cause of justice.
-    Mrs Suzman is delighted to annoy them in the cause of justice.
-    they are delighted to annoy them in the cause of justice.
-    They were delighted to annoy them in the cause of justice.
-    The ignitor is the trigger of the engine.
-    The ignitor was the trigger of the engine.
-    The ignitors are the trigger of the engine.
-    The ignitor were the trigger of the engine.
+    if do A then he do C.
+    '''
+
+    content_rule_1_base='''
+    The cause of the fire is the wood.
+    The cause of the fire was the wood.
+    The cause of the fire were the wood.
+    The cause of the fire are the wood.
+    The real reason of course is laziness.
+    The real reason of course are laziness.
+    The real reason of course was laziness.
+    The real reason of course were laziness.
+    So the people asked him to hold the candle for Don Twelfth, just by reason that his beautiful was more glaringness than the luna.
+    So the people asked him to hold the candle for Don Twelfth, just by reason that his beautiful were more glaringness than the luna.
+    So the people asked him to hold the candle for Don Twelfth, just by reason that his beautiful is more glaringness than the luna.
+    So the people asked him to hold the candle for Don Twelfth, just by reason that his beautiful are more glaringness than the luna.
+    The reason why the injection needs repeating every year is that the virus changes.
+    My sole reason for coming here is to see you.
+    My sole reason for coming here was to see you.
+    My sole reason for coming here are to see you.
+    My sole reason for coming here were to see you.
     '''
 
 
 
+    content_rule_0_base='''
+    The accident was caused by pilot error.
+    Noisome vapours arise from the mud left in the docks.
+    A contract cannot arise out of an illegal act.
+    The laugh at that time are triggered by surprise in a safe situation (think peek-a-boo), and don't just endear babies to their parents.
+    Opacity of the eye lens can be induced by deficiency of certain vitamins.
+    We have achieved great successes in the cause of building up our country.
+    From my point of view, TV is the cause of the declining interest in school and the failure of our entire educational system.
+    We are profoundly affected by what happens to us in childhood.
+    A word from the teacher will have a great effect on my son.
+    '''
 
 
 
@@ -1657,7 +1678,7 @@ def test():
     '''
 
     extractor = CausalityExractor()
-    datas = extractor.extract_main(content_rule_3_base)
+    datas = extractor.extract_main(content_rule_0_base)
     for data in datas:
         print('******'*4)
         print('cause', ''.join([word.split('/')[0] for word in data['cause'].split(' ') if word.split('/')[0]]))
