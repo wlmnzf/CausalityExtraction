@@ -416,6 +416,7 @@ def test():
 
 
     content_rule_0_base='''
+    HyperStack can use default credentials to connect to IPC$ shares on remote machines.[5]
     The accident was caused by pilot error.
     Noisome vapours arise from the mud left in the docks.
     A contract cannot arise out of an illegal act.
