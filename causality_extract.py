@@ -253,7 +253,7 @@ class CausalityExractor():
                 result = self.extract_triples(sent)
                 if result:
                     for data in result:
-                        if data['tag'] and data['cause'] and data['effect']:
+                        if data and  data['tag'] and data['cause'] and data['effect']:
                             datas.append(data)
         return datas
 
@@ -1685,4 +1685,4 @@ def test():
         print('tag', data['tag'])
         print('effect', ''.join([word.split('/')[0] for word in data['effect'].split(' ') if word.split('/')[0]]))
 
-test()
+# test()
